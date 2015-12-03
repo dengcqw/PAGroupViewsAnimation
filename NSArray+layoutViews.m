@@ -213,9 +213,8 @@ static NSInteger s_animatedCount;
         [toFrames addObject:[NSValue valueWithCGRect:frame]];
         
     }];
-
     
-    [self animateViewsFromFrames:fromFrames toFrames:toFrames duration:0.5 interval:0 completion:completion];
+    [self animateViewsFromFrames:fromFrames toFrames:toFrames duration:PAGroupViewAnimationDuration*3 interval:0.0 completion:completion];
 }
 
 
