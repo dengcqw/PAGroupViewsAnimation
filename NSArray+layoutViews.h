@@ -14,15 +14,15 @@
  */
 @interface NSArray (layoutViews)
 
+#pragma mark - calculate position 
+
+/*!
+ @brief  在`frame`中水平，垂直布局一组view
+ 
+ @param edgeInsets 各个view的边距
+ */
 - (NSArray *)viewFramesHorizontallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets;
 - (NSArray *)viewFramesVerticallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets;
-/**
- *  计算view分布的圆弧上的Center
- *
- *  @param radian    整个arc弧度
- *  @param arclength 每个view之间弧长
- */
-- (NSArray *)viewCentersOnArcWithCenter:(CGPoint)center radian:(CGFloat)radian viewArcLength:(CGFloat)arclength;
 
 /**
  * 计算有起始角度的圆弧上的frame
@@ -30,10 +30,12 @@
  *  @param center     中心点
  *  @param radian     整个arc弧度
  *  @param arclength  两个view之间弧长
- *  @param startAngle 起始角度
- *
+ *  @param startAngle 起始弧度
  */
 - (NSArray *)viewCentersOnArcWithCenter:(CGPoint)center radian:(CGFloat)radian viewArcLength:(CGFloat)arclength startAngle:(CGFloat)startAngle;
+
+
+#pragma mark - layout views 
 
 /*!
  @brief  水平方向布局则view高度等于frame高度，view宽度等于frame宽度按view数量等分。
@@ -48,20 +50,37 @@
 - (void)layoutViewsHorizontallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets;
 - (void)layoutViewsVerticallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets;
 
+
+#pragma mark - animate views
+
 /*!
- @brief  给每个view设置frame动画，起点相同都是aFrame，终点不同
+ @brief  给每个view设置frame动画
  */
-- (void)animateViewsFromFrame:(CGRect)aFrame toFrames:(NSArray *)frames completion:(void(^)(void))completion;
-- (void)animateViewsFromFrames:(NSArray *)frames toFrame:(CGRect)toFrame completion:(void(^)(void))completion;
-/*!
- @brief  给每个view设置frame动画，起点，终点都不同
- */
-- (void)animateViewsFromFrames:(NSArray *)frames toFrames:(NSArray *)frames completion:(void(^)(void))completion;
+- (void)animateViewsFromFrame:(CGRect)fromFrame toFrames:(NSArray *)toFrames completion:(void(^)(void))completion;
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrame:(CGRect)toFrame completion:(void(^)(void))completion;
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames completion:(void(^)(void))completion;
+
 /*!
  @brief  给每个view设置frame动画，起点，终点不同，同时设置每个动画的的时长和动画的间隔
+ 
+ @param fromFrames 各个view对应的起始位置
+ @param toFrames   各个view对应的终止位置
+ @param duration   总的动画时长
+ @param interval   各个view开始动画的时间间隔
+ @param completion 动画结束后执行block
  */
-- (void)animateViewsFromFrames:(NSArray *)frames toFrames:(NSArray *)frames duration:(CGFloat)duration interval:(CGFloat)interval completion:(void(^)(void))completion;
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames duration:(CGFloat)duration interval:(CGFloat)interval completion:(void(^)(void))completion;
 
+/*!
+ @brief 增加reverse属性，设置动画顺序，默认NO
+        reverse为NO，动画顺序同array顺序
+        reverse为YES，动画顺序同array逆序
+ */
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames duration:(CGFloat)duration interval:(CGFloat)interval reverse:(BOOL)reverse completion:(void(^)(void))completion;
+
+/*!
+ @brief  以view中心点做为动画的参数
+ */
 - (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters completion:(void (^)(void))completion;
 
 

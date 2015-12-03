@@ -8,8 +8,10 @@
 
 #import "NSArray+layoutViews.h"
 
-#define PAGroupViewAnimationDuration (0.3)
-#define PAGroupViewAnimationInterval (0.01)
+#define PAGroupViewAnimationDuration (0.1*self.count)
+#define PAGroupViewAnimationInterval (0.1)
+#define PAGroupViewAnimationSpringDamping (0.8)
+#define PAGroupViewAnimationSpringVelocity (0.3)
 
 @implementation NSArray (layoutViews)
 
@@ -130,49 +132,69 @@
 /*!
  @brief  给每个view设置frame动画，起点相同都是aFrame，终点不同
  */
-- (void)animateViewsFromFrame:(CGRect)aFrame toFrames:(NSArray *)frames completion:(void(^)(void))completion{
+- (void)animateViewsFromFrame:(CGRect)fromFrame toFrames:(NSArray *)toFrames completion:(void(^)(void))completion {
     
     NSMutableArray *fromFrames = [NSMutableArray array];
-    for (NSUInteger i=0; i<self.count; i++) {
-        [fromFrames addObject:[NSValue valueWithCGRect:aFrame]];
+    for (NSUInteger i=0; i < self.count; i++) {
+        [fromFrames addObject:[NSValue valueWithCGRect:fromFrame]];
     }
-    [self animateViewsFromFrames:fromFrames toFrames:frames completion:completion];
+    [self animateViewsFromFrames:fromFrames toFrames:toFrames completion:completion];
 }
 
-- (void)animateViewsFromFrames:(NSArray *)frames toFrame:(CGRect)toFrame completion:(void(^)(void))completion{
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrame:(CGRect)toFrame completion:(void(^)(void))completion {
     
     NSMutableArray *toFrames = [NSMutableArray array];
-    for (NSUInteger i=0; i<self.count; i++) {
+    for (NSUInteger i=0; i < self.count; i++) {
         [toFrames addObject:[NSValue valueWithCGRect:toFrame]];
     }
-    [self animateViewsFromFrames:frames toFrames:toFrames completion:completion];
+    [self animateViewsFromFrames:fromFrames toFrames:toFrames completion:completion];
 }
 
 /*!
  @brief  给每个view设置frame动画，起点，终点都不同
  */
-- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames completion:(void(^)(void))completion{
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames completion:(void(^)(void))completion {
     [self animateViewsFromFrames:fromFrames toFrames:toFrames duration:PAGroupViewAnimationDuration interval:PAGroupViewAnimationInterval completion:completion];
 }
 
-/*!
- @brief  给每个view设置frame动画，起点，终点不同，同时设置每个动画的的时长和动画的间隔
- */
-- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames duration:(CGFloat)duration interval:(CGFloat)interval completion:(void(^)(void))completion{
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames duration:(CGFloat)duration interval:(CGFloat)interval completion:(void(^)(void))completion {
+    [self animateViewsFromFrames:fromFrames toFrames:toFrames duration:duration interval:interval reverse:NO completion:completion];
+}
+
+static NSInteger s_animatedCount;
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames duration:(CGFloat)duration interval:(CGFloat)interval reverse:(BOOL)reverse completion:(void(^)(void))completion {
     
-    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
+    NSAssert(fromFrames.count == self.count,@"fromFrames is not equal to view count");
+    NSAssert(toFrames.count == self.count,@"toFrames is not equal to view count");
+    NSLog(@"duration %@, interval %@, reverse %@",@(duration), @(interval), @(reverse));
+    
+    // 设置起始位置
+    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
         view.frame = [(NSValue *)fromFrames[idx] CGRectValue];
     }];
     
-    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
-        [UIView animateWithDuration:duration delay:interval*idx usingSpringWithDamping:0.8 initialSpringVelocity:0.3 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            view.frame = [(NSValue *)toFrames[idx] CGRectValue];
-        } completion:^(BOOL finished) {
-            if (completion) {
-                completion();
-            }
-        }];
-    }];
+    CGFloat avg_duration = duration/self.count;
+    s_animatedCount = 0;
+    
+    NSEnumerator *enumrator = reverse?self.reverseObjectEnumerator:self.objectEnumerator;
+    [enumrator.allObjects enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
+        NSLog(@"animated index:%@",@(idx));
+        
+        [UIView animateWithDuration:avg_duration
+                              delay:interval*idx 
+             usingSpringWithDamping:PAGroupViewAnimationSpringDamping 
+              initialSpringVelocity:PAGroupViewAnimationSpringVelocity
+                            options:UIViewAnimationOptionCurveEaseInOut 
+                         animations:^{
+                                view.frame = [(NSValue *)toFrames[idx] CGRectValue];
+                         } 
+                         completion:^(BOOL finished) {
+                             s_animatedCount++;
+                             if (s_animatedCount==self.count && completion) {
+                                 completion();
+                             }
+                         }];
+    }]; // end of enumerate...
 }
 
 - (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters completion:(void (^)(void))completion {

@@ -177,21 +177,24 @@
     BOOL flyOut = sender.isSelected;
     sender.selected = ! sender.isSelected;
     
+    CGFloat duration = 0.6;
+    
     NSArray *fromFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(-80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
     NSArray *toFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:self.menuView.bounds withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
+    
     if ( !flyOut ) {
         self.menuView.hidden = NO;
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithDuration:(duration+3*0.1) animations:^{
             self.menuView.backgroundColor = [UIColor lightGrayColor];
         }];
-        [self.menuView.viewArrs animateViewsFromFrames:fromFrames toFrames:toFrames duration:0.1 interval:0.1 completion:^{
+        [self.menuView.viewArrs animateViewsFromFrames:fromFrames toFrames:toFrames duration:duration interval:0.1 completion:^{
         }];
     } else {
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithDuration:(duration+3*0.1) animations:^{
             self.menuView.backgroundColor = [UIColor clearColor];
         } completion:^(BOOL finished) {
         }];
-        [self.menuView.viewArrs animateViewsFromFrames:toFrames toFrames:fromFrames duration:0.1 interval:0.1 completion:^{
+        [self.menuView.viewArrs animateViewsFromFrames:toFrames toFrames:fromFrames duration:duration interval:0.1 completion:^{
             self.menuView.hidden = YES;
         }];
     }
@@ -236,23 +239,27 @@
     
     if ( !flyOut ) {
         self.bottomMenuView.hidden = NO;
-        [UIView animateWithDuration:0.3 animations:^{
-            self.bottomMenuView.backgroundColor = [UIColor grayColor];
+        [UIView animateWithDuration:0.6 animations:^{
+            self.bottomMenuView.backgroundColor = [UIColor lightGrayColor];
         }];
-        [self.bottomMenuView.viewArrs animateViewsFromFrames:fromFramesOne toFrames:toFramesOne duration:0.3 interval:0.01 completion:^{
-            [self.bottomMenuView.secondViewArrs animateViewsFromFrames:fromFramesTwo toFrames:toFramesTwo duration:0.3 interval:0.01 completion:^{
+        [self.bottomMenuView.viewArrs animateViewsFromFrames:fromFramesOne toFrames:toFramesOne duration:0.6 interval:0.1 completion:^{
+        }];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self.bottomMenuView.secondViewArrs animateViewsFromFrames:fromFramesTwo toFrames:toFramesTwo duration:0.6 interval:0.1 completion:^{
             }];
-        }];
+        });
     } else { 
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithDuration:0.6 animations:^{
             self.bottomMenuView.backgroundColor = [UIColor clearColor];
         } completion:^(BOOL finished) {
         }];
-        [self.bottomMenuView.viewArrs animateViewsFromFrames:toFramesOne toFrames:fromFramesOne duration:0.3 interval:0.01 completion:^{
-            [self.bottomMenuView.secondViewArrs animateViewsFromFrames:toFramesTwo toFrames:fromFramesTwo duration:0.3 interval:0.01 completion:^{
+        [self.bottomMenuView.secondViewArrs animateViewsFromFrames:toFramesTwo toFrames:fromFramesTwo duration:0.6 interval:0.1 reverse:YES completion:^{
+        }];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            [self.bottomMenuView.viewArrs animateViewsFromFrames:toFramesOne toFrames:fromFramesOne duration:0.6 interval:0.1 reverse:YES completion:^{
                 self.bottomMenuView.hidden = YES;
             }];
-        }];
+        });
     }
 }
 
