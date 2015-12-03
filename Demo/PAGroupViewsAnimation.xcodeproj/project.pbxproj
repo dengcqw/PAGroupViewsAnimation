@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA4759F91C1053AC0045FC9A /* UIView+PASetValueForKeyPath.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4759F81C1053AC0045FC9A /* UIView+PASetValueForKeyPath.m */; };
+		AA4759FC1C1053FE0045FC9A /* NSArray+Views.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4759FB1C1053FE0045FC9A /* NSArray+Views.m */; };
 		AAB8812D1C0FDFD9002648BC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB8812C1C0FDFD9002648BC /* main.m */; };
 		AAB881301C0FDFD9002648BC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB8812F1C0FDFD9002648BC /* AppDelegate.m */; };
 		AAB881361C0FDFD9002648BC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAB881341C0FDFD9002648BC /* Main.storyboard */; };
@@ -38,6 +40,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AA4759F71C1053AC0045FC9A /* UIView+PASetValueForKeyPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIView+PASetValueForKeyPath.h"; path = "../../UIView+PASetValueForKeyPath.h"; sourceTree = "<group>"; };
+		AA4759F81C1053AC0045FC9A /* UIView+PASetValueForKeyPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIView+PASetValueForKeyPath.m"; path = "../../UIView+PASetValueForKeyPath.m"; sourceTree = "<group>"; };
+		AA4759FA1C1053FE0045FC9A /* NSArray+Views.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Views.h"; sourceTree = "<group>"; };
+		AA4759FB1C1053FE0045FC9A /* NSArray+Views.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Views.m"; sourceTree = "<group>"; };
 		AAB881281C0FDFD9002648BC /* PAGroupViewsAnimation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PAGroupViewsAnimation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAB8812C1C0FDFD9002648BC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		AAB8812E1C0FDFD9002648BC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -110,6 +116,10 @@
 		AAB8812A1C0FDFD9002648BC /* PAGroupViewsAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				AA4759FA1C1053FE0045FC9A /* NSArray+Views.h */,
+				AA4759FB1C1053FE0045FC9A /* NSArray+Views.m */,
+				AA4759F71C1053AC0045FC9A /* UIView+PASetValueForKeyPath.h */,
+				AA4759F81C1053AC0045FC9A /* UIView+PASetValueForKeyPath.m */,
 				AAB881701C0FEE22002648BC /* NSArray+layoutViews.h */,
 				AAB881711C0FEE22002648BC /* NSArray+layoutViews.m */,
 				AAB8812E1C0FDFD9002648BC /* AppDelegate.h */,
@@ -288,6 +298,8 @@
 				AAB881601C0FE053002648BC /* UIView+MGEasyFrame.m in Sources */,
 				AAB881301C0FDFD9002648BC /* AppDelegate.m in Sources */,
 				AAB881631C0FE067002648BC /* ViewController.m in Sources */,
+				AA4759FC1C1053FE0045FC9A /* NSArray+Views.m in Sources */,
+				AA4759F91C1053AC0045FC9A /* UIView+PASetValueForKeyPath.m in Sources */,
 				AAB881721C0FEE22002648BC /* NSArray+layoutViews.m in Sources */,
 				AAB8812D1C0FDFD9002648BC /* main.m in Sources */,
 				AAB8816A1C0FE0DA002648BC /* MenuView.m in Sources */,

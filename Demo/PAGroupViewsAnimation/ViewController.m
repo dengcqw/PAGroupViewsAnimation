@@ -281,7 +281,8 @@
         case UIGestureRecognizerStateBegan: {
             
             // 初始化起始状态
-            [self.longPressMenuView.viewArrs setHide:YES];
+            [self.longPressMenuView.viewArrs setAlpha:0];
+            [self.longPressMenuView.viewArrs setHide:NO];
             self.longPressMenuView.hidden = NO;
             
             // 计算fromCenters
@@ -296,7 +297,7 @@
                 toCenters = [self.longPressMenuView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:100 startAngle:-(M_PI_4*2.5/2)];
             }
             
-            [self.longPressMenuView.viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters duration:0.3 interval:0 completion:nil];
+            [self.longPressMenuView.viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters duration:0.3 interval:0.1 completion:nil];
         }
             break;
         case UIGestureRecognizerStateEnded:
