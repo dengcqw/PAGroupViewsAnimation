@@ -20,6 +20,7 @@
 @property (strong, nonatomic) MenuView *menuView;
 @property (strong, nonatomic) MenuView *leftBottomMenuView;
 @property (strong, nonatomic) MenuView *bottomMenuView;
+@property (strong, nonatomic) MenuView *longPressView;
 
 @end
 
@@ -36,8 +37,8 @@
     [self.view addSubview:self.leftBottomMenuView];
     [self.view addSubview:self.bottomMenuView];
     
-    self.leftBottomMenuView.hidden = YES;
-    self.bottomMenuView.hidden = YES; 
+    NSLog(@"width:%f,height:%f",self.view.width,self.view.height);
+    
 }
 
 - (void)viewDidLoad {
@@ -47,60 +48,76 @@
     [self.bottomBtn addTarget:self action:@selector(bottomBtnClicked:) forControlEvents:
      UIControlEventTouchUpInside];
     
+    
     UIGestureRecognizer *gestureRecognizer = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPress:)];
     [self.view addGestureRecognizer:gestureRecognizer];
 }
 
 - (void)longPress:(UIGestureRecognizer *)gesture{
+    self.longPressView.bounds = self.view.bounds;
+    //获取触摸点的位置
+    NSArray *toCenters = [NSArray array];
+    [self.view addSubview:self.longPressView];
+    
     switch (gesture.state) {
         case UIGestureRecognizerStateBegan: {
             
-        }
-            break;
-        case UIGestureRecognizerStateEnded:
-        case UIGestureRecognizerStateCancelled: {
+            CGPoint point =[gesture locationInView:self.longPressView];
             
+            NSLog(@"gesturePoints:%@,subviewpoints: %@",NSStringFromCGPoint(point),self.longPressView.viewArrs);
+            [self.longPressView.viewArrs enumerateObjectsUsingBlock:^(UIImageView *obj, NSUInteger idx, BOOL * stop) {
+                obj.frame  = CGRectMake(0, 0, 72, 108);
+            }];
+            NSValue *pointValue = [NSValue valueWithCGPoint:point];
+            NSArray *fromCenters = @[pointValue,pointValue,pointValue];
+            if (point.x > self.view.width-72) {
+                toCenters = [self.longPressView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:110 startAngle:(M_PI-M_PI_4*2.5/2)];
+            }else {
+                toCenters = [self.longPressView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:110 startAngle:-(M_PI_4*2.5/2)];
+            }
+            
+            //NSArray *toCenters = [self.longPressView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:110 startAngle:-(M_PI_4*2.5/2)];
+            [self.longPressView.viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters completion:^{
+                
+            }];
         }
             break;
+        case UIGestureRecognizerStateEnded:  {
+            [self.longPressView removeFromSuperview];
+        }
+        case UIGestureRecognizerStateCancelled: {
+            [self.longPressView removeFromSuperview];
+        }
+            
         default:
             break;
     }
     
-    if (gesture.isEnabled) {
-        self.menuView.bounds = self.view.bounds;
-        [self.view addSubview:self.menuView];
-         //获取触摸点的位置
-        CGPoint point =[gesture locationInView:self.view];
-        UIView *pressView = [[UIView alloc]initWithFrame:CGRectMake(point.x, point.y, 30, 30)];
-        pressView.backgroundColor = [UIColor redColor];
-        [self.view addSubview:pressView];
-        [self.menuView.viewArrs enumerateObjectsUsingBlock:^(UIImageView *obj, NSUInteger idx, BOOL * stop) {
-            obj.frame  = CGRectMake(0, 0, 80, 120);
-        }];
-        
-        NSArray *toCenters = [self.menuView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*3) viewArcLength:150 startAngle:M_PI_4];
-        NSValue *pointValue = [NSValue valueWithCGPoint:point];
-        NSArray *fromCenters = @[pointValue,pointValue,pointValue];
-        [self.menuView.viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters completion:^{
-            
-        }];
-        
-        NSLog(@"I am long pressing.... %f---%f",point.x,point.y);
-    }
 }
 
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     self.leftBtn.frame = CGRectMake(0, 450, 80, 80);
-    self.menuView.frame = CGRectMake(0, 450-370, 80, 360);
+    self.menuView.frame = CGRectMake(0, 450-360, 80, 360);
     
     self.leftBottomBtn.frame = CGRectMake(0, self.view.bottom-80, 80, 80);
     self.leftBottomMenuView.frame = CGRectMake(self.view.center.y*0.5, 90, 80, 360);
     
     CGFloat bottomMenuViewX = (self.view.width-300)*0.5;
-    CGFloat bottomMenuViewY = (self.view.height-150) *0.6;
+    CGFloat bottomMenuViewY = (self.view.height-150) *0.7;
     self.bottomBtn.frame = CGRectMake((self.view.width-80)*0.5, self.view.bottom-80, 80, 80);
     self.bottomMenuView.frame = CGRectMake(bottomMenuViewX, bottomMenuViewY, 300, 280);
+    self.longPressView.frame = self.view.frame;
+    
+    
+}
+
+- (MenuView *)longPressView{
+    if (nil == _longPressView) {
+        _longPressView = [[MenuView alloc]init];
+        _longPressView.backgroundColor = [UIColor clearColor];
+    }
+    return _longPressView;
 }
 
 - (UIButton *)leftBtn {
@@ -135,7 +152,7 @@
             aButton.showsTouchWhenHighlighted = YES;
             
             aButton;
-        
+            
         });
     }
     return _leftBottomBtn;
@@ -158,7 +175,7 @@
             aButton.showsTouchWhenHighlighted = YES;
             
             aButton;
-        
+            
         });
     }
     return _bottomBtn;
@@ -173,87 +190,80 @@
 
 
 - (void)leftBtnClicked:(UIButton *)sender {
-    
-    BOOL flyOut = sender.isSelected;
-    sender.selected = ! sender.isSelected;
-    
     NSArray *fromFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(-80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
     NSArray *toFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:self.menuView.bounds withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
-    if ( !flyOut ) {
-        self.menuView.hidden = NO;
+    if (! sender.isSelected) {      // out
         [UIView animateWithDuration:0.3 animations:^{
             self.menuView.backgroundColor = [UIColor lightGrayColor];
         }];
-        [self.menuView.viewArrs animateViewsFromFrames:fromFrames toFrames:toFrames duration:0.1 interval:0.1 completion:^{
+        [self.menuView.viewArrs animateViewsFromFrames:fromFrames toFrames:toFrames duration:0.2 interval:0.0 completion:^{
         }];
-    } else {
+    } else {                       // in
         [UIView animateWithDuration:0.3 animations:^{
-            self.menuView.backgroundColor = [UIColor clearColor];
-        } completion:^(BOOL finished) {
+            self.menuView.backgroundColor = [UIColor whiteColor];
         }];
-        [self.menuView.viewArrs animateViewsFromFrames:toFrames toFrames:fromFrames duration:0.1 interval:0.1 completion:^{
-            self.menuView.hidden = YES;
+        [self.menuView.viewArrs animateViewsFromFrames:toFrames toFrames:fromFrames duration:0.2 interval:0.0 completion:^{
         }];
     }
+    sender.selected = ! sender.isSelected;
 }
 
-- (void)leftBottomBtnClicked:(UIButton *)sender{
-    BOOL flyOut = sender.isSelected;
-    sender.selected = ! sender.isSelected;
-    
+- (void)leftBottomBtnClicked:(UIButton *)btn{
     CGRect fromFrame = CGRectMake(-80, self.view.bottom, 80, 120);
     fromFrame = [self.view convertRect:fromFrame toView:self.leftBottomMenuView];
     
     NSArray *toFrames = [self.leftBottomMenuView.viewArrs viewFramesVerticallyLayoutInFrame:self.leftBottomMenuView.bounds withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
-    if (!flyOut ) { // fly in
-        self.leftBottomMenuView.hidden = NO;
+    if (! btn.isSelected) { // fly in
         [UIView animateWithDuration:0.3 animations:^{
-                self.leftBottomMenuView.backgroundColor = [UIColor lightGrayColor];
+            self.leftBottomMenuView.backgroundColor = [UIColor lightGrayColor];
         }];
         [self.leftBottomMenuView.viewArrs animateViewsFromFrame:fromFrame toFrames:toFrames completion:^{
+            
         }];
+        //        self.view.backgroundColor = [UIColor lightGrayColor];
     } else { // fly out
         [UIView animateWithDuration:0.3 animations:^{
-                self.leftBottomMenuView.backgroundColor = [UIColor clearColor];
-        } completion:^(BOOL finished) {
+            self.leftBottomMenuView.backgroundColor = [UIColor whiteColor];
         }];
         [self.leftBottomMenuView.viewArrs animateViewsFromFrames:toFrames toFrame:fromFrame completion:^{
-            self.leftBottomMenuView.hidden = YES;
+            
         }];
+        //        self.view.backgroundColor = [UIColor whiteColor];
     }
+    btn.selected = ! btn.isSelected;
 }
 
-- (void)bottomBtnClicked:(UIButton *)sender {
-    
-    BOOL flyOut = sender.isSelected;
-    sender.selected = ! sender.isSelected;
+- (void)bottomBtnClicked:(UIButton *)btn{
     
     NSArray *fromFramesOne = [self.bottomMenuView.viewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake((self.view.width-360)*0.5, self.view.bottom, 360, 80) withViewEdgeInsets:(UIEdgeInsetsMake(0, 5, 0, 5))];
     NSArray *toFramesOne = [self.bottomMenuView.viewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake(0, 0, 300, 150) withViewEdgeInsets:(UIEdgeInsetsMake(15, 10, 15, 10))];
-    
     NSArray *fromFramesTwo = [self.bottomMenuView.secondViewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake((self.view.width-360)*0.5, self.view.bottom, 360, 80) withViewEdgeInsets:(UIEdgeInsetsMake(0, 5, 0, 5))];
     NSArray *toFramesTwo = [self.bottomMenuView.secondViewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake(0, 120, 300, 150) withViewEdgeInsets:(UIEdgeInsetsMake(15, 10,15, 10))];
     
-    if ( !flyOut ) {
-        self.bottomMenuView.hidden = NO;
+    if (! btn.isSelected) {      // out
         [UIView animateWithDuration:0.3 animations:^{
-            self.bottomMenuView.backgroundColor = [UIColor grayColor];
+            //self.bottomMenuView.backgroundColor = [UIColor redColor];
         }];
-        [self.bottomMenuView.viewArrs animateViewsFromFrames:fromFramesOne toFrames:toFramesOne duration:0.3 interval:0.01 completion:^{
-            [self.bottomMenuView.secondViewArrs animateViewsFromFrames:fromFramesTwo toFrames:toFramesTwo duration:0.3 interval:0.01 completion:^{
+        [self.bottomMenuView.viewArrs animateViewsFromFrames:fromFramesOne toFrames:toFramesOne duration:0.1 interval:0.0 completion:^{
+            [self.bottomMenuView.secondViewArrs animateViewsFromFrames:fromFramesTwo toFrames:toFramesTwo duration:0.2 interval:0.0 completion:^{
+                
             }];
         }];
-    } else { 
+    } else {                       // in
         [UIView animateWithDuration:0.3 animations:^{
-            self.bottomMenuView.backgroundColor = [UIColor clearColor];
-        } completion:^(BOOL finished) {
+            // self.bottomMenuView.backgroundColor = [UIColor clearColor];
         }];
-        [self.bottomMenuView.viewArrs animateViewsFromFrames:toFramesOne toFrames:fromFramesOne duration:0.3 interval:0.01 completion:^{
-            [self.bottomMenuView.secondViewArrs animateViewsFromFrames:toFramesTwo toFrames:fromFramesTwo duration:0.3 interval:0.01 completion:^{
-                self.bottomMenuView.hidden = YES;
+        [self.bottomMenuView.viewArrs animateViewsFromFrames:toFramesOne toFrames:fromFramesOne duration:0.1 interval:0.0 completion:^{
+            [self.bottomMenuView.secondViewArrs animateViewsFromFrames:toFramesTwo toFrames:fromFramesTwo duration:0.2 interval:0.0 completion:^{
+                
             }];
         }];
     }
+    btn.selected = !btn.isSelected;
+    
 }
 
+
+
 @end
+
