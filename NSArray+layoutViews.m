@@ -8,10 +8,30 @@
 
 #import "NSArray+layoutViews.h"
 
-#define PAGroupViewAnimationDuration (0.1*self.count)
-#define PAGroupViewAnimationInterval (0.1)
 #define PAGroupViewAnimationSpringDamping (0.8)
 #define PAGroupViewAnimationSpringVelocity (0.3)
+
+@implementation NSArray (Views)
+
+- (void)setHide:(BOOL)hide {
+    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
+        view.hidden = hide;
+    }];
+}
+
+- (void)setFrame:(CGRect)frame {
+    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
+        view.frame = frame;
+    }];
+}
+
+- (void)setCenter:(CGPoint)center {
+    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
+        view.center = center;
+    }];
+} 
+
+@end
 
 @implementation NSArray (layoutViews)
 
@@ -173,20 +193,19 @@ static NSInteger s_animatedCount;
         view.frame = [(NSValue *)fromFrames[idx] CGRectValue];
     }];
     
-    CGFloat avg_duration = duration/self.count;
     s_animatedCount = 0;
     
     NSEnumerator *enumrator = reverse?self.reverseObjectEnumerator:self.objectEnumerator;
     [enumrator.allObjects enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
-        NSLog(@"animated index:%@",@(idx));
         
-        [UIView animateWithDuration:avg_duration
+        [UIView animateWithDuration:duration
                               delay:interval*idx 
              usingSpringWithDamping:PAGroupViewAnimationSpringDamping 
               initialSpringVelocity:PAGroupViewAnimationSpringVelocity
                             options:UIViewAnimationOptionCurveEaseInOut 
                          animations:^{
-                                view.frame = [(NSValue *)toFrames[idx] CGRectValue];
+                             view.hidden = NO;
+                             view.frame = [(NSValue *)toFrames[idx] CGRectValue];
                          } 
                          completion:^(BOOL finished) {
                              s_animatedCount++;
@@ -198,24 +217,44 @@ static NSInteger s_animatedCount;
 }
 
 - (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters completion:(void (^)(void))completion {
+    [self animateViewsFromCenters:fromCenters toCenters:toCenters duration:PAGroupViewAnimationDuration interval:PAGroupViewAnimationInterval reverse:NO completion:completion];
+}
+
+- (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters duration:(CGFloat)duration interval:(CGFloat)interval completion:(void(^)(void))completion {
+    [self animateViewsFromCenters:fromCenters toCenters:toCenters duration:duration interval:interval reverse:NO completion:completion];
+}
+
+- (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters duration:(CGFloat)duration interval:(CGFloat)interval reverse:(BOOL)reverse completion:(void(^)(void))completion {
+    
     NSMutableArray *fromFrames = [NSMutableArray array];
     NSMutableArray *toFrames = [NSMutableArray array];
 
-    [self enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    // 计算frame
+    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
         CGRect frame = CGRectZero;
         CGPoint fromPoint = [(NSValue *)fromCenters[idx] CGPointValue];
         CGPoint toPoint = [(NSValue *)toCenters[idx] CGPointValue];
         
-        frame = CGRectMake(fromPoint.x -obj.frame.size.width*0.5, fromPoint.y-obj.frame.size.height*0.5, obj.frame.size.width, obj.frame.size.height);
+        frame = CGRectChangeCenter(view.frame, fromPoint);
         [fromFrames addObject:[NSValue valueWithCGRect:frame]];
         
-        frame = CGRectMake(toPoint.x -obj.frame.size.width*0.5, toPoint.y-obj.frame.size.height*0.5, obj.frame.size.width, obj.frame.size.height);
+        frame = CGRectChangeCenter(view.frame, toPoint);
         [toFrames addObject:[NSValue valueWithCGRect:frame]];
-        
     }];
     
-    [self animateViewsFromFrames:fromFrames toFrames:toFrames duration:PAGroupViewAnimationDuration*3 interval:0.0 completion:completion];
+    [self animateViewsFromFrames:fromFrames toFrames:toFrames duration:duration interval:interval reverse:reverse completion:completion];
 }
 
-
 @end
+
+NSArray *arrayWithRepeatElement(id element, NSInteger count) {
+    NSMutableArray *mutableArray = [[NSMutableArray alloc] init];
+    for (NSInteger i = 0; i < count; i++) {
+        [mutableArray addObject:element];
+    }
+    return [mutableArray copy]; 
+}
+
+CGRect CGRectChangeCenter(CGRect rect, CGPoint center) {
+    return CGRectMake(center.x-rect.size.width*0.5, center.y-rect.size.height*0.5, rect.size.width, rect.size.height);
+}

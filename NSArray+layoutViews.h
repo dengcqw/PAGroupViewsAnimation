@@ -8,6 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+
+#define PAGroupViewAnimationDuration (0.1) // 每个view默认动画时间
+#define PAGroupViewAnimationInterval (0.1) // view依次开始动画的默认时间间隔
+
+@interface NSArray (Views)
+
+- (void)setHide:(BOOL)hide;
+- (void)setFrame:(CGRect)frame;
+- (void)setCenter:(CGPoint)center;
+
+@end
+
 /*!
  @brief  根据计算修改各个view元素的frame
          给一组view设置frame动画
@@ -33,7 +45,6 @@
  *  @param startAngle 起始弧度
  */
 - (NSArray *)viewCentersOnArcWithCenter:(CGPoint)center radian:(CGFloat)radian viewArcLength:(CGFloat)arclength startAngle:(CGFloat)startAngle;
-
 
 #pragma mark - layout views 
 
@@ -65,8 +76,8 @@
  
  @param fromFrames 各个view对应的起始位置
  @param toFrames   各个view对应的终止位置
- @param duration   总的动画时长
- @param interval   各个view开始动画的时间间隔
+ @param duration   各个view动画时长
+ @param interval   view依次开始动画的时间间隔
  @param completion 动画结束后执行block
  */
 - (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames duration:(CGFloat)duration interval:(CGFloat)interval completion:(void(^)(void))completion;
@@ -82,6 +93,11 @@
  @brief  以view中心点做为动画的参数
  */
 - (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters completion:(void (^)(void))completion;
-
+- (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters duration:(CGFloat)duration interval:(CGFloat)interval completion:(void(^)(void))completion;
+- (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters duration:(CGFloat)duration interval:(CGFloat)interval reverse:(BOOL)reverse completion:(void(^)(void))completion; 
 
 @end
+
+NSArray *arrayWithRepeatElement(id element, NSInteger count);
+
+CGRect CGRectChangeCenter(CGRect rect, CGPoint center);

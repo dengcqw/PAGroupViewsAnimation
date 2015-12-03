@@ -35,7 +35,7 @@
 
 - (void)createSubViews{
     _aboutIV = [[UIImageView alloc]init];
-    _aboutIV.image = [UIImage imageNamed:@"about.png"];
+    _aboutIV.image = [UIImage imageNamed:@"gpa.png"];
     [self addSubview:_aboutIV];
     
     _jobsIV = [[UIImageView alloc]init];
@@ -59,7 +59,7 @@
     [self addSubview:_noticeIV];
     
     _lafIV  = [[UIImageView alloc]init];
-    _lafIV.image = [UIImage imageNamed:@"library.png"];
+    _lafIV.image = [UIImage imageNamed:@"laf.png"];
     [self addSubview:_lafIV];
     
     [self.secondViewArrs addObject:_newsIV];
