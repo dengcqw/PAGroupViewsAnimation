@@ -35,7 +35,7 @@
 
 @implementation NSArray (layoutViews)
 
-- (NSArray *)viewFramesHorizontallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets{
+- (NSArray *)viewFramesHorizontallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets {
     NSMutableArray *viewArrs = [NSMutableArray array];
     CGFloat width = frame.size.width/self.count;
     CGFloat height = frame.size.height;
@@ -53,7 +53,7 @@
     return [viewArrs copy];
 }
 
-- (NSArray *)viewFramesVerticallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets{
+- (NSArray *)viewFramesVerticallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets {
     NSMutableArray *viewArrs = [NSMutableArray array];
     
     CGFloat width = frame.size.width;
@@ -96,7 +96,7 @@
     return [viewArrs copy];
 }
 
-- (NSArray *)viewCentersOnArcWithCenter:(CGPoint)center radian:(CGFloat)radian viewArcLength:(CGFloat)arclength startAngle:(CGFloat)startAngle{
+- (NSArray *)viewCentersOnArcWithCenter:(CGPoint)center radian:(CGFloat)radian viewArcLength:(CGFloat)arclength startAngle:(CGFloat)startAngle {
     
     NSInteger count = self.count;
     CGFloat averRadian = radian / (count -1);  //每两view之间的弧度
@@ -117,16 +117,16 @@
 }
 
 
-- (void)layoutViewsHorizontallyInFrame:(CGRect)frame{
+- (void)layoutViewsHorizontallyInFrame:(CGRect)frame {
     [self layoutViewsHorizontallyInFrame:frame viewEdgeInsets:UIEdgeInsetsZero];
 }
 
-- (void)layoutViewsVerticallyInFrame:(CGRect)frame{
+- (void)layoutViewsVerticallyInFrame:(CGRect)frame {
     [self layoutViewsVerticallyInFrame:frame viewEdgeInsets:UIEdgeInsetsZero];
 }
 
 #pragma mark - 每个view增加edgeInsets
-- (void)layoutViewsHorizontallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets{
+- (void)layoutViewsHorizontallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets {
     NSArray *frames = [self viewFramesHorizontallyLayoutInFrame:frame withViewEdgeInsets:edgeInsets];
     
     [self enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -138,7 +138,7 @@
         
     }];
 }
-- (void)layoutViewsVerticallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets{
+- (void)layoutViewsVerticallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets {
     NSArray *frames = [self viewFramesVerticallyLayoutInFrame:frame withViewEdgeInsets:edgeInsets];
     [self enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (![obj isKindOfClass:UIView.class]) {

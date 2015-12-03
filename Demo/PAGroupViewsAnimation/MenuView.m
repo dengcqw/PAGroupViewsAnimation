@@ -26,14 +26,14 @@
  *  initailize
  *
 */
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         [self createSubViews];
     }
     return self;
 }
 
-- (void)createSubViews{
+- (void)createSubViews {
     _aboutIV = [[UIImageView alloc]init];
     _aboutIV.image = [UIImage imageNamed:@"gpa.png"];
     [self addSubview:_aboutIV];
@@ -67,14 +67,14 @@
     [self.secondViewArrs addObject:_lafIV];
 }
 
-- (NSMutableArray *)viewArrs{
+- (NSMutableArray *)viewArrs {
     if (_viewArrs.count ==0) {
         _viewArrs = [NSMutableArray array];
     }
     return _viewArrs;
 }
 
-- (NSMutableArray *)secondViewArrs{
+- (NSMutableArray *)secondViewArrs {
     if (_secondViewArrs ==0) {
         _secondViewArrs = [NSMutableArray array];
     }
