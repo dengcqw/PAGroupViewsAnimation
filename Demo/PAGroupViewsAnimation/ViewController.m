@@ -109,7 +109,7 @@
     return _menuView;
 }
 
--(UIButton *)leftBottomBtn{
+-(UIButton *)leftBottomBtn {
     if (nil == _leftBottomBtn) {
         self.leftBottomBtn = ({
             UIButton *aButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
@@ -125,14 +125,14 @@
     return _leftBottomBtn;
 }
 
-- (MenuView *)leftBottomMenuView{
+- (MenuView *)leftBottomMenuView {
     if (nil == _leftBottomMenuView) {
         self.leftBottomMenuView = [[MenuView alloc]init];
     }
     return _leftBottomMenuView;
 }
 
-- (UIButton *)bottomBtn{
+- (UIButton *)bottomBtn {
     if (nil == _bottomBtn) {
         self.bottomBtn = ({
             UIButton *aButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 0, 0, 0)];
@@ -148,7 +148,7 @@
     return _bottomBtn;
 }
 
--(MenuView *)bottomMenuView{
+- (MenuView *)bottomMenuView {
     if (nil == _bottomMenuView) {
         self.bottomMenuView = [[MenuView alloc]init];
     }
@@ -203,7 +203,7 @@
     }
 }
 
-- (void)leftBottomBtnClicked:(UIButton *)sender{
+- (void)leftBottomBtnClicked:(UIButton *)sender {
     
     BOOL flyOut = sender.isSelected;
     sender.selected = ! sender.isSelected;
@@ -233,7 +233,7 @@
     }
 }
 
-- (void)bottomBtnClicked:(UIButton *)sender{
+- (void)bottomBtnClicked:(UIButton *)sender {
     
     BOOL flyOut = sender.isSelected;
     sender.selected = ! sender.isSelected;
@@ -271,9 +271,10 @@
             }];
         });
     }
+    
 }
 
-- (void)longPressAction:(UIGestureRecognizer *)gesture{
+- (void)longPressAction:(UIGestureRecognizer *)gesture {
     NSArray *toCenters = [NSArray array];
     [self.view addSubview:self.longPressMenuView];
     
@@ -281,7 +282,6 @@
         case UIGestureRecognizerStateBegan: {
             
             // 初始化起始状态
-            [self.longPressMenuView.viewArrs setAlpha:0];
             [self.longPressMenuView.viewArrs setHide:NO];
             self.longPressMenuView.hidden = NO;
             
@@ -297,23 +297,43 @@
                 toCenters = [self.longPressMenuView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:100 startAngle:-(M_PI_4*2.5/2)];
             }
             
-            [self.longPressMenuView.viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters duration:0.3 interval:0.1 completion:nil];
+            [self.longPressMenuView.viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters duration:0.3 interval:0.0 completion:nil];
         }
             break;
         case UIGestureRecognizerStateEnded:
         case UIGestureRecognizerStateCancelled: {
-            self.longPressMenuView.hidden = YES;
+            self.longPressMenuView.hidden = YES; 
             break;
         }
         case UIGestureRecognizerStateChanged: {
-            CGPoint point = [gesture locationInView:self.view];
+            //CGPoint point = [gesture locationInView:self.view];
             //NSLog(@"finger move:%@",NSStringFromCGPoint(point));
             break;
         }
         default:
             break;
+            
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @end
 
