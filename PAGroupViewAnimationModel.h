@@ -20,6 +20,7 @@
 @property (assign, nonatomic) CGFloat duration; /*< 各个view动画时长 */
 @property (assign, nonatomic) CGFloat interval; /*< view依次开始动画的时间间隔，若为0，则同时开始动画 */
 
+@property (assign, nonatomic) BOOL spring; /*< 是否使用弹簧效果，默认NO */
 @property (assign, nonatomic) CGFloat springDamping;
 @property (assign, nonatomic) CGFloat springVelocity;
 

@@ -74,8 +74,38 @@
 
 - (void)animateViewsForKeyPath:(NSString *)keyPath from:(NSArray *)fromValues to:(NSArray *)toValues duration:(CGFloat)duration interval:(CGFloat)interval reverse:(BOOL)reverse completion:(void(^)(void))completion {
     
+    PAGroupViewAnimationModel *settingModel = [[PAGroupViewAnimationModel alloc] init];
+    settingModel.duration = duration;
+    settingModel.interval = interval;
+    settingModel.reverse = reverse;
+    settingModel.springDamping = PAGroupViewAnimationSpringDamping;
+    settingModel.springVelocity = PAGroupViewAnimationSpringVelocity;
+    settingModel.options = UIViewAnimationOptionCurveEaseInOut;
+    settingModel.spring  = YES;
+    
+    [self animateViewsForKeyPath:keyPath from:fromValues to:toValues settingModel:settingModel completion:completion];
+    
+}
+
+- (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters settingModel:(PAGroupViewAnimationModel *)settingModel completion:(void (^)(void))completion {
+
+    [self animateViewsForKeyPath:@"center" from:fromCenters to:toCenters settingModel:settingModel completion:completion];
+}
+
+- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames settingModel:(PAGroupViewAnimationModel *)settingModel completion:(void (^)(void))completion {
+    
+    [self animateViewsForKeyPath:@"frame" from:fromFrames to:toFrames settingModel:settingModel completion:completion];
+}
+
+- (void)animateViewsForKeyPath:(NSString *)keyPath from:(NSArray *)fromValues to:(NSArray *)toValues settingModel:(PAGroupViewAnimationModel *)settingModel completion:(void (^)(void))completion {
+    
     NSAssert(fromValues.count == self.count,@"fromFrames is not equal to view count");
     NSAssert(toValues.count == self.count,@"toFrames is not equal to view count");
+    NSAssert(settingModel, @"settingModel can not be nil");
+    
+    CGFloat duration = settingModel.duration;
+    CGFloat interval = settingModel.interval;
+    CGFloat reverse  = settingModel.reverse;
     NSLog(@"Group Views Animation: duration %@, interval %@, reverse %@",@(duration), @(interval), @(reverse));
     
     // 设置起始值
@@ -90,35 +120,36 @@
     toValues = toFrameEnumrator.allObjects;
     
     [viewEnumrator.allObjects enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
-        
-        [UIView animateWithDuration:duration
-                              delay:interval*idx 
-             usingSpringWithDamping:PAGroupViewAnimationSpringDamping 
-              initialSpringVelocity:PAGroupViewAnimationSpringVelocity
-                            options:UIViewAnimationOptionCurveEaseInOut 
-                         animations:^{
-                             [view pa_setValue:toValues[idx] forKeyPath:keyPath];
-                         } 
-                         completion:^(BOOL finished) {
-                             NSInteger count = [self getPA_animatedCount]+1;
-                             if (count==self.count && completion) {
-                                 completion();
+        if (settingModel.spring) {
+            [UIView animateWithDuration:duration
+                                  delay:interval*idx
+                 usingSpringWithDamping:settingModel.springDamping
+                  initialSpringVelocity:settingModel.springVelocity
+                                options:settingModel.options
+                             animations:^{
+                                 [view pa_setValue:toValues[idx] forKeyPath:keyPath];
                              }
-                             [self setPA_animatedCount:count];
-                         }];
+                             completion:^(BOOL finished) {
+                                 NSInteger count = [self getPA_animatedCount]+1;
+                                 if (count==self.count && completion) {
+                                     completion();
+                                 }
+                                 [self setPA_animatedCount:count];
+                             }];
+        }else {
+            
+            [UIView animateWithDuration:duration animations:^{
+                [view pa_setValue:toValues[idx] forKeyPath:keyPath];
+            } completion:^(BOOL finished) {
+                NSInteger count = [self getPA_animatedCount]+1;
+                if (count==self.count && completion) {
+                    completion();
+                }
+                [self setPA_animatedCount:count];
+            }];
+        }
+        
     }]; // end of enumerate...
-}
-
-- (void)animateViewsFromCenters:(NSArray *)fromCenters toCenters:(NSArray *)toCenters settingModel:(PAGroupViewAnimationModel *)settingModel completion:(void (^)(void))completion {
-    
-}
-
-- (void)animateViewsFromFrames:(NSArray *)fromFrames toFrames:(NSArray *)toFrames settingModel:(PAGroupViewAnimationModel *)settingModel completion:(void (^)(void))completion {
-    
-}
-
-- (void)animateViewsForKeyPath:(NSString *)keyPath from:(NSArray *)fromValues to:(NSArray *)toValues settingModel:(PAGroupViewAnimationModel *)settingModel completion:(void (^)(void))completion {
-    
 }
 
 - (void)setPA_animatedCount:(NSInteger)count {

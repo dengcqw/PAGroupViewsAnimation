@@ -23,6 +23,7 @@
         self.reverse = NO;
         
         self.options = UIViewAnimationOptionCurveEaseInOut;
+        self.spring  = NO;
     }
     return self;
 }

@@ -19,6 +19,7 @@
 @property (strong, nonatomic) UIButton *leftBottomBtn;
 @property (strong, nonatomic) UIButton *bottomBtn;
 @property (strong, nonatomic) UILabel *longPressHintLabel;
+@property (strong, nonatomic) UIButton *rightBtn;
 
 @property (strong, nonatomic) MenuView *menuView;
 @property (strong, nonatomic) MenuView *leftBottomMenuView;
@@ -40,6 +41,8 @@
     [self.view addSubview:self.leftBottomMenuView];
     [self.view addSubview:self.bottomMenuView];
     
+    [self.view addSubview:self.rightBtn];
+    
     self.menuView.hidden = YES;
     self.leftBottomMenuView.hidden = YES;
     self.bottomMenuView.hidden = YES;
@@ -54,6 +57,7 @@
     [self.leftBottomBtn addTarget:self action:@selector(leftBottomBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.bottomBtn addTarget:self action:@selector(bottomBtnClicked:) forControlEvents:
      UIControlEventTouchUpInside];
+    [self.rightBtn addTarget:self action:@selector(rightBtnClick:) forControlEvents:(UIControlEventTouchUpInside)];
     
     UIGestureRecognizer *gestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
     [self.view addGestureRecognizer:gestureRecognizer];
@@ -75,6 +79,8 @@
     
     self.longPressMenuView.frame = self.view.bounds;
     self.longPressHintLabel.frame =  CGRectMake(0, 0, self.view.width, 80);
+    
+    self.rightBtn.frame = CGRectMake(self.view.width - 80, 450, 80, 80);
 }
 
 - (MenuView *)longPressMenuView {
@@ -171,6 +177,17 @@
     return _longPressHintLabel;
 }
 
+- (UIButton *)rightBtn{
+    if (nil == _rightBtn) {
+        _rightBtn = [[UIButton alloc] initWithFrame:CGRectZero];
+        [_rightBtn setTitle:@"right" forState:UIControlStateNormal];
+        [_rightBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        _rightBtn.backgroundColor = [UIColor lightGrayColor];
+        _rightBtn.showsTouchWhenHighlighted = YES;
+        
+    }
+    return _rightBtn;
+}
 
 
 - (void)leftBtnClicked:(UIButton *)sender {
@@ -320,4 +337,38 @@
     }
 }
 
+- (void)rightBtnClick:(UIButton *)sender{
+    
+    BOOL flyOut = sender.isSelected;
+    sender.selected = ! sender.isSelected;
+    
+    CGFloat duration = 0.3;
+    
+    NSArray *fromFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.view.width + 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
+    NSArray *toFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.view.width - 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
+
+    if ( !flyOut ) {
+        self.menuView.hidden = NO;
+#ifdef PAAddGrayBackgroundView
+        [UIView animateWithDuration:(duration+3*0.1) animations:^{
+            self.menuView.backgroundColor = [UIColor lightGrayColor];
+        }];
+#endif
+        PAGroupViewAnimationModel *model = [[PAGroupViewAnimationModel alloc] init];
+        model.interval = 0.1;
+        model.springDamping = 0.1;
+        model.springVelocity = 0.1;
+//        model.options = UIVie
+        [self.menuView.viewArrs animateViewsForKeyPath:@"frame" from:fromFrames to:toFrames settingModel:model completion:nil];
+    } else {
+#ifdef PAAddGrayBackgroundView
+        [UIView animateWithDuration:(duration+3*0.1) animations:^{
+            self.menuView.backgroundColor = [UIColor clearColor];
+        }];
+#endif
+        [self.menuView.viewArrs animateViewsFromFrames:toFrames toFrames:fromFrames duration:duration interval:0.1 completion:^{
+            self.menuView.hidden = YES;
+        }];
+    }
+}
 @end

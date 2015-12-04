@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>0B339EC5-29AF-4FE3-A4D3-7A5BBD44B51C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>PAGroupViewsAnimation</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>FB04BA13DBA96A5D5EA781D9B5FF54B86888ED78</key>
+		<string>https://github.com/dengcqw/PAGroupViewsAnimation.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Demo/PAGroupViewsAnimation.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>FB04BA13DBA96A5D5EA781D9B5FF54B86888ED78</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/dengcqw/PAGroupViewsAnimation.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>FB04BA13DBA96A5D5EA781D9B5FF54B86888ED78</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>FB04BA13DBA96A5D5EA781D9B5FF54B86888ED78</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PAGroupViewsAnimation</string>
+		</dict>
+	</array>
+</dict>
+</plist>
