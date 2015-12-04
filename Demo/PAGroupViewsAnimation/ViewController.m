@@ -25,7 +25,7 @@
 @property (strong, nonatomic) MenuView *leftBottomMenuView;
 @property (strong, nonatomic) MenuView *bottomMenuView;
 @property (strong, nonatomic) MenuView *longPressMenuView;
-
+@property (strong, nonatomic) MenuView *rightMenuView;
 @end
 
 @implementation ViewController
@@ -42,11 +42,13 @@
     [self.view addSubview:self.bottomMenuView];
     
     [self.view addSubview:self.rightBtn];
+    [self.view addSubview:self.rightMenuView];
     
     self.menuView.hidden = YES;
     self.leftBottomMenuView.hidden = YES;
     self.bottomMenuView.hidden = YES;
     self.longPressMenuView.hidden = YES;
+    self.rightMenuView.hidden = YES;
     
     [self.view addSubview:self.longPressHintLabel];
 }
@@ -81,6 +83,7 @@
     self.longPressHintLabel.frame =  CGRectMake(0, 0, self.view.width, 80);
     
     self.rightBtn.frame = CGRectMake(self.view.width - 80, 450, 80, 80);
+    self.rightMenuView.frame = CGRectMake(self.view.width - 80, 92, 80, 360);
 }
 
 - (MenuView *)longPressMenuView {
@@ -187,6 +190,13 @@
         
     }
     return _rightBtn;
+}
+
+- (MenuView *)rightMenuView{
+    if (nil == _rightMenuView) {
+        _rightMenuView = [[MenuView alloc] init];
+    }
+    return _rightMenuView;
 }
 
 
@@ -344,31 +354,33 @@
     
     CGFloat duration = 0.3;
     
-    NSArray *fromFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.view.width + 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
-    NSArray *toFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.view.width - 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
-
-    PAGroupViewAnimationModel *model = [[PAGroupViewAnimationModel alloc] init];
-    model.interval = 0.1;
-    model.spring = YES;
-    model.options = UIViewAnimationOptionCurveEaseIn;
+    NSArray *fromFrames = [self.rightMenuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.rightMenuView.right + 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
+    NSArray *toFrames = [self.rightMenuView.viewArrs viewFramesVerticallyLayoutInFrame:self.rightMenuView.bounds withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
     
     if ( !flyOut ) {
-        self.menuView.hidden = NO;
+        self.rightMenuView.hidden = NO;
 #ifdef PAAddGrayBackgroundView
         [UIView animateWithDuration:(duration+3*0.1) animations:^{
-            self.menuView.backgroundColor = [UIColor lightGrayColor];
+            self.rightMenuView.backgroundColor = [UIColor lightGrayColor];
         }];
 #endif
-        [self.menuView.viewArrs animateViewsForKeyPath:@"frame" from:fromFrames to:toFrames settingModel:model completion:nil];
+        PAGroupViewAnimationModel *settingModel = [[PAGroupViewAnimationModel alloc] init];
+        settingModel.duration = duration+3*0.1;
+        settingModel.interval = 0.1;
+        settingModel.springDamping = PAGroupViewAnimationSpringDamping;
+        settingModel.springVelocity = PAGroupViewAnimationSpringVelocity;
+        settingModel.options = UIViewAnimationOptionCurveEaseInOut;
+        settingModel.spring  = YES;
+        
+        [self.rightMenuView.viewArrs animateViewsForKeyPath:@"frame" from:fromFrames to:toFrames settingModel:settingModel completion:nil];
     } else {
 #ifdef PAAddGrayBackgroundView
         [UIView animateWithDuration:(duration+3*0.1) animations:^{
-            self.menuView.backgroundColor = [UIColor clearColor];
+            self.rightMenuView.backgroundColor = [UIColor clearColor];
         }];
 #endif
-        model.options = UIViewAnimationOptionCurveEaseOut;
-        [self.menuView.viewArrs animateViewsForKeyPath:@"frame" from:toFrames to:fromFrames settingModel:model completion:^{
-            self.menuView.hidden = YES;
+        [self.rightMenuView.viewArrs animateViewsFromFrames:toFrames toFrames:fromFrames duration:duration interval:0.1 completion:^{
+            self.rightMenuView.hidden = YES;
         }];
     }
 }
