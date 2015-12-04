@@ -347,6 +347,11 @@
     NSArray *fromFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.view.width + 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
     NSArray *toFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.view.width - 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
 
+    PAGroupViewAnimationModel *model = [[PAGroupViewAnimationModel alloc] init];
+    model.interval = 0.1;
+    model.spring = YES;
+    model.options = UIViewAnimationOptionCurveEaseIn;
+    
     if ( !flyOut ) {
         self.menuView.hidden = NO;
 #ifdef PAAddGrayBackgroundView
@@ -354,11 +359,6 @@
             self.menuView.backgroundColor = [UIColor lightGrayColor];
         }];
 #endif
-        PAGroupViewAnimationModel *model = [[PAGroupViewAnimationModel alloc] init];
-        model.interval = 0.1;
-        model.springDamping = 0.1;
-        model.springVelocity = 0.1;
-//        model.options = UIVie
         [self.menuView.viewArrs animateViewsForKeyPath:@"frame" from:fromFrames to:toFrames settingModel:model completion:nil];
     } else {
 #ifdef PAAddGrayBackgroundView
@@ -366,7 +366,8 @@
             self.menuView.backgroundColor = [UIColor clearColor];
         }];
 #endif
-        [self.menuView.viewArrs animateViewsFromFrames:toFrames toFrames:fromFrames duration:duration interval:0.1 completion:^{
+        model.options = UIViewAnimationOptionCurveEaseOut;
+        [self.menuView.viewArrs animateViewsForKeyPath:@"frame" from:toFrames to:fromFrames settingModel:model completion:^{
             self.menuView.hidden = YES;
         }];
     }

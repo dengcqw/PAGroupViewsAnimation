@@ -99,6 +99,7 @@
 
 - (void)animateViewsForKeyPath:(NSString *)keyPath from:(NSArray *)fromValues to:(NSArray *)toValues settingModel:(PAGroupViewAnimationModel *)settingModel completion:(void (^)(void))completion {
     
+    NSAssert(keyPath.length,@"keyPath can not be empty");
     NSAssert(fromValues.count == self.count,@"fromFrames is not equal to view count");
     NSAssert(toValues.count == self.count,@"toFrames is not equal to view count");
     NSAssert(settingModel, @"settingModel can not be nil");
@@ -106,18 +107,26 @@
     CGFloat duration = settingModel.duration;
     CGFloat interval = settingModel.interval;
     CGFloat reverse  = settingModel.reverse;
-    NSLog(@"Group Views Animation: duration %@, interval %@, reverse %@",@(duration), @(interval), @(reverse));
+    NSLog(@"Group Views (%@) Animation: duration(%@), interval(%@), reverse(%@)",keyPath, @(duration), @(interval), reverse?@"YES":@"NO");
     
     // 设置起始值
     [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
         [view pa_setValue:fromValues[idx] forKeyPath:keyPath];
     }];
     
-    [self setPA_animatedCount:0];
-    
     NSEnumerator *viewEnumrator = reverse?self.reverseObjectEnumerator:self.objectEnumerator;
     NSEnumerator *toFrameEnumrator = reverse?toValues.reverseObjectEnumerator:toValues.objectEnumerator;
     toValues = toFrameEnumrator.allObjects;
+    
+    // view动画结束计数
+    [self setPA_animatedCount:0];
+    void(^_completion)(BOOL finished) = ^(BOOL finish) {
+        NSInteger count = [self getPA_animatedCount]+1;
+        if (count==self.count && completion) {
+            completion();
+        }
+        [self setPA_animatedCount:count];
+    };
     
     [viewEnumrator.allObjects enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL *stop) {
         if (settingModel.spring) {
@@ -129,26 +138,15 @@
                              animations:^{
                                  [view pa_setValue:toValues[idx] forKeyPath:keyPath];
                              }
-                             completion:^(BOOL finished) {
-                                 NSInteger count = [self getPA_animatedCount]+1;
-                                 if (count==self.count && completion) {
-                                     completion();
-                                 }
-                                 [self setPA_animatedCount:count];
-                             }];
+                             completion:_completion];
         }else {
-            
-            [UIView animateWithDuration:duration animations:^{
+            [UIView animateWithDuration:duration 
+                                  delay:interval*idx 
+                                options:settingModel.options 
+                             animations:^{
                 [view pa_setValue:toValues[idx] forKeyPath:keyPath];
-            } completion:^(BOOL finished) {
-                NSInteger count = [self getPA_animatedCount]+1;
-                if (count==self.count && completion) {
-                    completion();
-                }
-                [self setPA_animatedCount:count];
-            }];
+            } completion:_completion];
         }
-        
     }]; // end of enumerate...
 }
 
