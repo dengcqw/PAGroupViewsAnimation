@@ -11,8 +11,7 @@
 @implementation UIView (PASetValueForKeyPath)
 
 - (void)pa_setValue:(id)value forKeyPath:(NSString *)keyPath {
-    NSArray *animationAttrs = @[ 
-                                /*view*/
+    NSArray *animationAttrs = @[/*view*/
                                 @"frame", 
                                 @"bounds", 
                                 @"center",

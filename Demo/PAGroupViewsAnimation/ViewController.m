@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "NSArray+GroupAnimation.h"
 #import "NSArray+layoutViews.h"
 #import "MenuView.h"
 #import "UIView+MGEasyFrame.h"
@@ -271,7 +272,6 @@
             }];
         });
     }
-    
 }
 
 - (void)longPressAction:(UIGestureRecognizer *)gesture {
@@ -285,19 +285,23 @@
             [self.longPressMenuView.viewArrs setHide:NO];
             self.longPressMenuView.hidden = NO;
             
+            NSInteger viewCount = self.longPressMenuView.viewArrs.count;
+            NSArray *viewArrs = self.longPressMenuView.viewArrs;
+            
             // 计算fromCenters
             CGPoint point =[gesture locationInView:self.view];
             NSValue *pointValue = [NSValue valueWithCGPoint:point];
-            NSArray *fromCenters = arrayWithRepeatElement(pointValue, self.longPressMenuView.viewArrs.count);
+            NSArray *fromCenters = arrayWithRepeatElement(pointValue, viewCount);
             
             // 计算toCenters
             if (point.x > self.view.width-72) {
-                toCenters = [self.longPressMenuView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:100 startAngle:(M_PI-M_PI_4*2.5/2)];
+                toCenters = [viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:100 startAngle:(M_PI-M_PI_4*2.5/2)];
             }else {
-                toCenters = [self.longPressMenuView.viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:100 startAngle:-(M_PI_4*2.5/2)];
+                toCenters = [viewArrs viewCentersOnArcWithCenter:point radian:(M_PI_4*2.5) viewArcLength:100 startAngle:-(M_PI_4*2.5/2)];
             }
             
-            [self.longPressMenuView.viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters duration:0.3 interval:0.0 completion:nil];
+            [viewArrs animateViewsForKeyPath:@"alpha" from:arrayWithRepeatElement(@(0), viewCount) to:arrayWithRepeatElement(@(1), viewCount) duration:0.3 interval:0.0 reverse:NO completion:nil];
+            [viewArrs animateViewsFromCenters:fromCenters toCenters:toCenters duration:0.3 interval:0.0 completion:nil];
         }
             break;
         case UIGestureRecognizerStateEnded:
@@ -316,24 +320,4 @@
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @end
-
