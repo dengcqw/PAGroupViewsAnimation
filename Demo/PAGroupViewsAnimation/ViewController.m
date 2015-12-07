@@ -217,8 +217,14 @@
             self.menuView.backgroundColor = [UIColor lightGrayColor];
         }];
 #endif
+        CGAffineTransform fromTrans = CGAffineTransformMakeRotation(M_PI);
+        NSArray *fromArr = arrayWithRepeatElement([NSValue valueWithCGAffineTransform:fromTrans], self.menuView.viewArrs.count);
+        CGAffineTransform toTrans = CGAffineTransformIdentity;
+        NSArray *toArr = arrayWithRepeatElement([NSValue valueWithCGAffineTransform:toTrans], self.menuView.viewArrs.count);
+        [self.menuView.viewArrs pa_setValue:[NSValue valueWithCGAffineTransform:fromTrans] forKeyPath:@"transform"]; 
         [self.menuView.viewArrs animateViewsFromFrames:fromFrames toFrames:toFrames duration:duration interval:0.1 completion:^{
         }];
+        [self.menuView.viewArrs animateViewsForKeyPath:@"transform" from:fromArr to:toArr duration:duration interval:0.1 reverse:NO completion:nil];
     } else {
 #ifdef PAAddGrayBackgroundView
         [UIView animateWithDuration:(duration+3*0.1) animations:^{

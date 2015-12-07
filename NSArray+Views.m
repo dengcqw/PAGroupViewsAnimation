@@ -7,6 +7,7 @@
 //
 
 #import "NSArray+Views.h"
+#import "UIView+PASetValueForKeyPath.h"
 
 @implementation NSArray (Views)
 
@@ -31,6 +32,12 @@
 - (void)setAlpha:(CGFloat)alpha {
     [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
         view.alpha = alpha;
+    }];
+}
+
+- (void)pa_setValue:(id)value forKeyPath:(NSString *)keyPath {
+    [self enumerateObjectsUsingBlock:^(UIView *view, NSUInteger idx, BOOL * _Nonnull stop) {
+        [view pa_setValue:value forKeyPath:keyPath]; 
     }];
 }
 

@@ -16,4 +16,6 @@
 - (void)setCenter:(CGPoint)center;
 - (void)setAlpha:(CGFloat)alpha;
 
+- (void)pa_setValue:(id)value forKeyPath:(NSString *)keyPath;
+
 @end
