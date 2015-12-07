@@ -21,10 +21,11 @@
 /*!
  @brief  在`frame`中水平，垂直布局一组view
  
- @param edgeInsets 各个view的边距
+ @param edgeInsets frame的边距
+ @param padding view之间的距离
  */
-- (NSArray *)viewFramesHorizontallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets;
-- (NSArray *)viewFramesVerticallyLayoutInFrame:(CGRect)frame withViewEdgeInsets:(UIEdgeInsets)edgeInsets;
+- (NSArray *)viewFramesHorizontallyLayoutInFrame:(CGRect)frame edgeInsets:(UIEdgeInsets)edgeInsets viewPadding:(CGFloat)padding;
+- (NSArray *)viewFramesVerticallyLayoutInFrame:(CGRect)frame edgeInsets:(UIEdgeInsets)edgeInsets viewPadding:(CGFloat)padding;
 
 /**
  * 计算有起始角度的圆弧上的frame
@@ -46,10 +47,10 @@
 - (void)layoutViewsVerticallyInFrame:(CGRect)frame;
 
 /*!
- @brief  布局同时给每个view增加edge insets
+ @brief  布局同时给每个view增加padding, 设置frame的edge
  */
-- (void)layoutViewsHorizontallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets;
-- (void)layoutViewsVerticallyInFrame:(CGRect)frame viewEdgeInsets:(UIEdgeInsets)edgeInsets;
+- (void)layoutViewsHorizontallyInFrame:(CGRect)frame edgeInsets:(UIEdgeInsets)edgeInsets viewPadding:(CGFloat)padding;
+- (void)layoutViewsVerticallyInFrame:(CGRect)frame edgeInsets:(UIEdgeInsets)edgeInsets viewPadding:(CGFloat)padding;
 
 
 #pragma mark - animate views

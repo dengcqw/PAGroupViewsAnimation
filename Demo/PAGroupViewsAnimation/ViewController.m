@@ -207,8 +207,8 @@
     
     CGFloat duration = 0.3;
     
-    NSArray *fromFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(-80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
-    NSArray *toFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:self.menuView.bounds withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
+    NSArray *fromFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(-80, 0, 80, 360) edgeInsets:UIEdgeInsetsMake(5, 0, 5, 0) viewPadding:0];
+    NSArray *toFrames = [self.menuView.viewArrs viewFramesVerticallyLayoutInFrame:self.menuView.bounds edgeInsets:UIEdgeInsetsMake(5, 0, 5, 0) viewPadding:0];
     
     if ( !flyOut ) {
         self.menuView.hidden = NO;
@@ -245,7 +245,7 @@
     CGRect fromFrame = CGRectMake(-80, self.view.bottom, 80, 120);
     fromFrame = [self.view convertRect:fromFrame toView:self.leftBottomMenuView];
     
-    NSArray *toFrames = [self.leftBottomMenuView.viewArrs viewFramesVerticallyLayoutInFrame:self.leftBottomMenuView.bounds withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
+    NSArray *toFrames = [self.leftBottomMenuView.viewArrs viewFramesVerticallyLayoutInFrame:self.leftBottomMenuView.bounds edgeInsets:UIEdgeInsetsMake(5, 0, 5, 0) viewPadding:0];
     if (! flyOut) { 
 #ifdef PAAddGrayBackgroundView
         [UIView animateWithDuration:0.3 animations:^{
@@ -272,11 +272,16 @@
     BOOL flyOut = sender.isSelected;
     sender.selected = ! sender.isSelected;
     
-    NSArray *fromFramesOne = [self.bottomMenuView.viewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake((self.view.width-360)*0.5, self.view.bottom, 360, 80) withViewEdgeInsets:(UIEdgeInsetsMake(0, 5, 0, 5))];
-    NSArray *toFramesOne = [self.bottomMenuView.viewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake(0, 0, 300, 150) withViewEdgeInsets:(UIEdgeInsetsMake(15, 10, 15, 10))];
+    UIEdgeInsets insets = UIEdgeInsetsMake(10, 0, 10, 0);
+    CGFloat padding = 5;
     
-    NSArray *fromFramesTwo = [self.bottomMenuView.secondViewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake((self.view.width-360)*0.5, self.view.bottom, 360, 80) withViewEdgeInsets:(UIEdgeInsetsMake(0, 5, 0, 5))];
-    NSArray *toFramesTwo = [self.bottomMenuView.secondViewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake(0, 120, 300, 150) withViewEdgeInsets:(UIEdgeInsetsMake(15, 10,15, 10))];
+    [self.bottomMenuView.viewArrs pa_setValue:[UIColor redColor] forKeyPath:@"backgroundColor"];
+    
+    NSArray *fromFramesOne = [self.bottomMenuView.viewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake((self.view.width-360)*0.5, self.view.bottom, 300, 80) edgeInsets:insets viewPadding:5];
+    NSArray *toFramesOne = [self.bottomMenuView.viewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake(0, 0, 300, 140) edgeInsets:insets viewPadding:padding];
+    
+    NSArray *fromFramesTwo = [self.bottomMenuView.secondViewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake((self.view.width-360)*0.5, self.view.bottom, 300, 80) edgeInsets:insets viewPadding:padding];
+    NSArray *toFramesTwo = [self.bottomMenuView.secondViewArrs viewFramesHorizontallyLayoutInFrame:CGRectMake(0, 120, 300, 140) edgeInsets:insets viewPadding:padding];
     
     if ( !flyOut ) {
         self.bottomMenuView.hidden = NO;
@@ -360,8 +365,8 @@
     
     CGFloat duration = 0.3;
     
-    NSArray *fromFrames = [self.rightMenuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.rightMenuView.right + 80, 0, 80, 360) withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
-    NSArray *toFrames = [self.rightMenuView.viewArrs viewFramesVerticallyLayoutInFrame:self.rightMenuView.bounds withViewEdgeInsets:(UIEdgeInsetsMake(5, 0, 5, 0))];
+    NSArray *fromFrames = [self.rightMenuView.viewArrs viewFramesVerticallyLayoutInFrame:CGRectMake(self.rightMenuView.right + 80, 0, 80, 360) edgeInsets:UIEdgeInsetsMake(5, 0, 5, 0) viewPadding:0];
+    NSArray *toFrames = [self.rightMenuView.viewArrs viewFramesVerticallyLayoutInFrame:self.rightMenuView.bounds edgeInsets:UIEdgeInsetsMake(5, 0, 5, 0) viewPadding:0];
     
     if ( !flyOut ) {
         self.rightMenuView.hidden = NO;
