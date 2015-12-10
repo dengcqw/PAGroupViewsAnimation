@@ -36,6 +36,14 @@
  *  @param startAngle 起始弧度
  */
 - (NSArray *)viewCentersOnArcWithCenter:(CGPoint)center radian:(CGFloat)radian viewArcLength:(CGFloat)arclength startAngle:(CGFloat)startAngle;
+/**
+ *  计算有起始角度的圆上的frame
+ *
+ *  @param center     中心点
+ *  @param radian     圆
+ *  @param startAngle 起始弧度
+ */
+- (NSArray *)viewCentersOnCircleWithCenter:(CGPoint)center viewArcLength:(CGFloat)arclength startAngle:(CGFloat)startAngle;
 
 #pragma mark - layout views 
 

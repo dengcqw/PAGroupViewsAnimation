@@ -93,6 +93,11 @@
     return [viewArrs copy];
 }
 
+- (NSArray *)viewCentersOnCircleWithCenter:(CGPoint)center viewArcLength:(CGFloat)arclength startAngle:(CGFloat)startAngle {
+    return [self viewCentersOnArcWithCenter:center radian:2*M_PI-1 viewArcLength:arclength startAngle:startAngle];
+}
+
+
 - (void)layoutViewsHorizontallyInFrame:(CGRect)frame {
     [self layoutViewsHorizontallyInFrame:frame edgeInsets:(UIEdgeInsetsZero) viewPadding:0.0]; 
 }
